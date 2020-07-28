@@ -40,7 +40,7 @@ class DatabaseFunctions:
         conn = sqlite3.connect(self.dbName)
         c = conn.cursor()
         c.execute("""SELECT username,dbID FROM baseTable WHERE instaID IS NULL""")
-        withoutIDs =  c.fetchall()
+        withoutIDs = c.fetchall()
         conn.close()
         return withoutIDs
 
