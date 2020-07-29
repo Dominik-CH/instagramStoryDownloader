@@ -4,8 +4,8 @@ import requests
 import sqlite3
 from databaseConfig import DatabaseFunctions
 import os
-
-
+import time
+import sys
 
 class InstaFunctions(Instagram):
     def __init__(self):
@@ -37,8 +37,7 @@ class InstaFunctions(Instagram):
 
 
     def ewigerLoop(self):
-        i=0
-        while i<1:
+        while True:
             self.checkDBifNewUser()
             listofUsersQuery = self.databaseFunc.getAllUserIDs()
             for pair in listofUsersQuery:
@@ -103,9 +102,11 @@ class InstaFunctions(Instagram):
                                             continue
                                     except AttributeError:
                                         print("No low bandwith url")
+                    time.sleep(60*60)   #Eine Stunde warten bis die nächste anfrage kommt
                 except Exception as ex:
                     print("HIER SIND WIR")
                     print(ex)
+                    sys.exit(1)
             break
 
 
