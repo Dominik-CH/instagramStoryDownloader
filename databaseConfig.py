@@ -18,7 +18,7 @@ class DatabaseFunctions:
         c.execute('''CREATE TABLE baseTable
                      (dbID INTEGER PRIMARY KEY AUTOINCREMENT, instaID text, username text)''')
         c.execute('''CREATE TABLE storyInfo
-                     (userID INTEGER, mediaID text, unixtime text, mediaType text, highResImg text, StdResImg text, LowResImg text, LowResVid text, HighResVid text, StdResVid text, FOREIGN KEY(userID) REFERENCES baseTable(dbID))''')
+                     (userID INTEGER, mediaID text, unixtime text, mediaType text, FOREIGN KEY(userID) REFERENCES baseTable(dbID))''')
         conn.commit()
         conn.close()
         return dbName
@@ -44,7 +44,36 @@ class DatabaseFunctions:
         conn.close()
         return withoutIDs
 
+    def checkIfStoryIDInDB(self,storyID):
+        conn = sqlite3.connect(self.dbName)
+        c = conn.cursor()
+        c.execute("""SELECT mediaType, userID FROM storyInfo WHERE mediaID =?""",(storyID,))
+        withoutIDs = c.fetchone()
+        conn.close()
+        print(withoutIDs)
+        if withoutIDs == None:
+            print("Muss runtergeladen werden ")
+            return True
+        else:
+            print("MUSS NICHT runtergeladen werden")
+            return False
 
+    def writeDataInDB(self, userID, mediaID, unixtime, mediaType):
+        conn = sqlite3.connect(self.dbName)
+        c = conn.cursor()
+        c.execute("""insert into storyInfo (userID , mediaID , unixtime , mediaType) values (?,?,?,?)""",
+                  (userID, mediaID, unixtime, mediaType,))
+        conn.commit()
+        conn.close()
 
-#idk = DatabaseFunctions()
+    def fetchDBIDbyinstaID(self,instaID):
+        conn = sqlite3.connect(self.dbName)
+        c = conn.cursor()
+        c.execute("""SELECT dbID FROM baseTable WHERE instaID=?""",(instaID,))
+        dbID = c.fetchone()
+        conn.close()
+        return dbID[0]  #Damit gleich die ID übergeben wird und nicht das Tuple
+
+idk = DatabaseFunctions()
 #idk.createDatabase()
+#idk.writeDataInDB(1,"15","52","15")

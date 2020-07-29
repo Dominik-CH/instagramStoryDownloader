@@ -23,8 +23,10 @@ class InstaFunctions(Instagram):
                 self.databaseFunc.writeInstaIDIntoDB(identifier,username)
 
     def downloadProfilePicture(self,url, name, dbID, type):
+        print(dbID, type, url)
         if not os.path.exists(str(dbID)):
             os.makedirs(str(dbID))
+
         response = requests.get(url)
         if type == "image":
             with open(os.path.join(str(dbID), name + ".jpg"), 'wb') as temp_file:
@@ -48,55 +50,68 @@ class InstaFunctions(Instagram):
                         for oneStory in story.stories:
                             unixtime = oneStory.created_time  # gives back unixtime
                             storyID = oneStory.identifier
-                            if oneStory.type == "image":
-                                image_high_resolution_url = oneStory.image_high_resolution_url
-                                Image_low_res_URL = oneStory.image_low_resolution_url
-                                Image_Standard_Res_URL = oneStory.image_low_resolution_url
-                                try:
-                                    url = oneStory.image_high_resolution_url  # soll video url speichern wenn story ein video ist.
-                                    self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                    continue
-                                except AttributeError:
-                                    print("No high resolution url")
-                                try:
-                                    url = oneStory.image_standard_resolution_url  # soll video url speichern wenn story ein video ist.
-                                    self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                    continue
-                                except AttributeError:
-                                    print("No standard resolution url")
-                                try:
-                                    url = oneStory.image_low_resolution_url  # soll video url speichern wenn story ein video ist.
-                                    self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                    continue
-                                except AttributeError:
-                                    print("No low resolution url")
+                            if self.databaseFunc.checkIfStoryIDInDB(storyID) == True:
+                                if oneStory.type == "image":
+                                    print("Bei den Bildern")
+                                    try:
+                                        url = oneStory.image_high_resolution_url  # soll video url speichern wenn story ein video ist.
+                                        if url != None:
+                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type) #Media ID ist dann auch der Name der Datei
+                                            continue
+                                    except AttributeError:
+                                        print("No high resolution url")
+                                    try:
+                                        url = oneStory.image_standard_resolution_url  # soll video url speichern wenn story ein video ist.
+                                        if url != None:
+                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            continue
+                                    except AttributeError:
+                                        print("No standard resolution url")
+                                    try:
+                                        url = oneStory.image_low_resolution_url  # soll video url speichern wenn story ein video ist.
+                                        if url != None:
+                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            continue
+                                    except AttributeError:
+                                        print("No low resolution url")
+                                elif oneStory.type == "video":
+                                    try:
+                                        url = oneStory.video_standard_resolution_url  # soll video url speichern wenn story ein video ist.
+                                        if url != None:
+                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            continue
+                                    except AttributeError:
+                                        print("No standard resolution url")
+                                    try:
 
-                            elif oneStory.type == "video":
-                                try:
-                                    url = oneStory.video_standard_resolution_url  # soll video url speichern wenn story ein video ist.
-                                    self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                    continue
-                                except AttributeError:
-                                    print("No standard resolution url")
-                                try:
-                                    url = oneStory.video_low_resolution_url  # soll video url speichern wenn story ein video ist.
-                                    self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                    continue
-                                except AttributeError:
-                                    print("No Low Res URL Video")
-                                try:
-                                    url = oneStory.video_low_bandwith_url  # soll video url speichern wenn story ein video ist.
-                                    self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                    continue
-                                except AttributeError:
-                                    print("No low bandwith url")
+                                        url = oneStory.video_low_resolution_url  # soll video url speichern wenn story ein video ist.
+                                        if url != None:
+                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            continue
+                                    except AttributeError:
+                                        print("No Low Res URL Video")
+                                    try:
+                                        url = oneStory.video_low_bandwith_url  # soll video url speichern wenn story ein video ist.
+                                        if url != None:
+                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            continue
+                                    except AttributeError:
+                                        print("No low bandwith url")
                 except Exception as ex:
+                    print("HIER SIND WIR")
                     print(ex)
-            i+=1
+            break
 
 
 
 instagram = InstaFunctions()
+#instagram.with_credentials(MAINUSERNAME, MAINPASSWORD)
 instagram.with_credentials(MAINUSERNAME, MAINPASSWORD)
 instagram.login(force=False, two_step_verificator=True)
 instagram.ewigerLoop()
