@@ -6,6 +6,9 @@ from databaseConfig import DatabaseFunctions
 import os
 import time
 import sys
+from datetime import datetime
+
+
 
 class InstaFunctions(Instagram):
     def __init__(self):
@@ -40,11 +43,15 @@ class InstaFunctions(Instagram):
         while True:
             self.checkDBifNewUser()
             listofUsersQuery = self.databaseFunc.getAllUserIDs()
+            print(listofUsersQuery)
             for pair in listofUsersQuery:
+                print(pair)
                 try:
+                    print("Wir sind wieder hier oben")
                     stories = self.get_stories(pair[0])
                     for story in stories:
                         username = story.owner  # User ID von instagram
+                        print(username)
                         instaID = story.owner.identifier
                         for oneStory in story.stories:
                             unixtime = oneStory.created_time  # gives back unixtime
@@ -57,7 +64,9 @@ class InstaFunctions(Instagram):
                                         if url != None:
                                             self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
                                             self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type) #Media ID ist dann auch der Name der Datei
+                                            print("Continue")
                                             continue
+
                                     except AttributeError:
                                         print("No high resolution url")
                                     try:
@@ -65,6 +74,7 @@ class InstaFunctions(Instagram):
                                         if url != None:
                                             self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
                                             self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            print("Continue")
                                             continue
                                     except AttributeError:
                                         print("No standard resolution url")
@@ -73,6 +83,7 @@ class InstaFunctions(Instagram):
                                         if url != None:
                                             self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
                                             self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            print("Continue")
                                             continue
                                     except AttributeError:
                                         print("No low resolution url")
@@ -82,6 +93,7 @@ class InstaFunctions(Instagram):
                                         if url != None:
                                             self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
                                             self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            print("Continue")
                                             continue
                                     except AttributeError:
                                         print("No standard resolution url")
@@ -91,6 +103,7 @@ class InstaFunctions(Instagram):
                                         if url != None:
                                             self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
                                             self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            print("Continue")
                                             continue
                                     except AttributeError:
                                         print("No Low Res URL Video")
@@ -99,15 +112,24 @@ class InstaFunctions(Instagram):
                                         if url != None:
                                             self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
                                             self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                            print("Continue")
                                             continue
                                     except AttributeError:
                                         print("No low bandwith url")
-                    time.sleep(60*60)   #Eine Stunde warten bis die nächste anfrage kommt
+                            else:
+                                print(oneStory)
+                                print("Something strange is happenning.")
                 except Exception as ex:
                     print("HIER SIND WIR")
                     print(ex)
                     sys.exit(1)
-            break
+            now = datetime.now()
+            current_time = now.strftime("%H:%M:%S")
+            print("Paused since: ", current_time)
+            time.sleep(60 * 60)  # Eine Stunde warten bis die nächste anfrage kommt
+
+
+
 
 
 
