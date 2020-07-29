@@ -74,6 +74,6 @@ class DatabaseFunctions:
         conn.close()
         return dbID[0]  #Damit gleich die ID übergeben wird und nicht das Tuple
 
-idk = DatabaseFunctions()
+#idk = DatabaseFunctions()
 #idk.createDatabase()
 #idk.writeDataInDB(1,"15","52","15")
