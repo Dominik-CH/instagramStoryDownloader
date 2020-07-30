@@ -1,7 +1,7 @@
 # instagramStoryDownloader
 
 A script to download Instagram Stories from any account you are permitted to see content from.<br>
-<small>(Public Profiles and private ones your account is following)</small><br>
+<sub><sup>(That means Public Profiles and private ones your account is following)</sup></sub><br>
 
 ## Setting everything up
 
