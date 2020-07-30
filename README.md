@@ -18,6 +18,9 @@ A script to download Instagram Stories from any account you are permitted to see
 <li>All there is to do now is running the downloadInstaStory.py</li>
 <li>The created directories are named after the IDs the User has inside the baseTable</li>
 </ul>
+
+
+
 # Dependencies
 Package | Version 
 ---------|----------
