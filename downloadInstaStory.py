@@ -17,6 +17,7 @@ class InstaFunctions(Instagram):
     def checkDBifNewUser(self): #Vor jedem neuen durchlauf wird diese funktion aufgerufen um zu schauen ob alles klar geht
         withoutID = self.databaseFunc.withoutID()
         if len(withoutID)!= 0:
+            print("Adding IDs to DB")
             print(withoutID)
             for pairs in withoutID:
                 username = pairs[0]
@@ -43,11 +44,8 @@ class InstaFunctions(Instagram):
         #while True:
         self.checkDBifNewUser()
         listofUsersQuery = self.databaseFunc.getAllUserIDs()
-        print(listofUsersQuery)
         for pair in listofUsersQuery:
-            print(pair)
             try:
-                print("Wir sind wieder hier oben")
                 stories = self.get_stories(pair[0])
                 for story in stories:
                     username = story.owner  # User ID von instagram
@@ -58,13 +56,11 @@ class InstaFunctions(Instagram):
                         storyID = oneStory.identifier
                         if self.databaseFunc.checkIfStoryIDInDB(storyID) == True:
                             if oneStory.type == "image":
-                                print("Bei den Bildern")
                                 try:
                                     url = oneStory.image_high_resolution_url  # soll video url speichern wenn story ein video ist.
                                     if url != None:
                                         self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
                                         self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type) #Media ID ist dann auch der Name der Datei
-                                        print("Continue")
                                         continue
 
                                 except AttributeError:
@@ -117,10 +113,8 @@ class InstaFunctions(Instagram):
                                 except AttributeError:
                                     print("No low bandwith url")
                         else:
-                            print(oneStory)
                             print("Something strange is happenning.")
             except Exception as ex:
-                print("HIER SIND WIR")
                 print(ex)
                 sys.exit(1)
             #now = datetime.now()
