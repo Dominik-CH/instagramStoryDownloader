@@ -40,93 +40,93 @@ class InstaFunctions(Instagram):
 
 
     def ewigerLoop(self):
-        while True:
-            self.checkDBifNewUser()
-            listofUsersQuery = self.databaseFunc.getAllUserIDs()
-            print(listofUsersQuery)
-            for pair in listofUsersQuery:
-                print(pair)
-                try:
-                    print("Wir sind wieder hier oben")
-                    stories = self.get_stories(pair[0])
-                    for story in stories:
-                        username = story.owner  # User ID von instagram
-                        print(username)
-                        instaID = story.owner.identifier
-                        for oneStory in story.stories:
-                            unixtime = oneStory.created_time  # gives back unixtime
-                            storyID = oneStory.identifier
-                            if self.databaseFunc.checkIfStoryIDInDB(storyID) == True:
-                                if oneStory.type == "image":
-                                    print("Bei den Bildern")
-                                    try:
-                                        url = oneStory.image_high_resolution_url  # soll video url speichern wenn story ein video ist.
-                                        if url != None:
-                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type) #Media ID ist dann auch der Name der Datei
-                                            print("Continue")
-                                            continue
+        #while True:
+        self.checkDBifNewUser()
+        listofUsersQuery = self.databaseFunc.getAllUserIDs()
+        print(listofUsersQuery)
+        for pair in listofUsersQuery:
+            print(pair)
+            try:
+                print("Wir sind wieder hier oben")
+                stories = self.get_stories(pair[0])
+                for story in stories:
+                    username = story.owner  # User ID von instagram
+                    print(username)
+                    instaID = story.owner.identifier
+                    for oneStory in story.stories:
+                        unixtime = oneStory.created_time  # gives back unixtime
+                        storyID = oneStory.identifier
+                        if self.databaseFunc.checkIfStoryIDInDB(storyID) == True:
+                            if oneStory.type == "image":
+                                print("Bei den Bildern")
+                                try:
+                                    url = oneStory.image_high_resolution_url  # soll video url speichern wenn story ein video ist.
+                                    if url != None:
+                                        self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                        self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type) #Media ID ist dann auch der Name der Datei
+                                        print("Continue")
+                                        continue
 
-                                    except AttributeError:
-                                        print("No high resolution url")
-                                    try:
-                                        url = oneStory.image_standard_resolution_url  # soll video url speichern wenn story ein video ist.
-                                        if url != None:
-                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
-                                            print("Continue")
-                                            continue
-                                    except AttributeError:
-                                        print("No standard resolution url")
-                                    try:
-                                        url = oneStory.image_low_resolution_url  # soll video url speichern wenn story ein video ist.
-                                        if url != None:
-                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
-                                            print("Continue")
-                                            continue
-                                    except AttributeError:
-                                        print("No low resolution url")
-                                elif oneStory.type == "video":
-                                    try:
-                                        url = oneStory.video_standard_resolution_url  # soll video url speichern wenn story ein video ist.
-                                        if url != None:
-                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
-                                            print("Continue")
-                                            continue
-                                    except AttributeError:
-                                        print("No standard resolution url")
-                                    try:
+                                except AttributeError:
+                                    print("No high resolution url")
+                                try:
+                                    url = oneStory.image_standard_resolution_url  # soll video url speichern wenn story ein video ist.
+                                    if url != None:
+                                        self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                        self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                        print("Continue")
+                                        continue
+                                except AttributeError:
+                                    print("No standard resolution url")
+                                try:
+                                    url = oneStory.image_low_resolution_url  # soll video url speichern wenn story ein video ist.
+                                    if url != None:
+                                        self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                        self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                        print("Continue")
+                                        continue
+                                except AttributeError:
+                                    print("No low resolution url")
+                            elif oneStory.type == "video":
+                                try:
+                                    url = oneStory.video_standard_resolution_url  # soll video url speichern wenn story ein video ist.
+                                    if url != None:
+                                        self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                        self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                        print("Continue")
+                                        continue
+                                except AttributeError:
+                                    print("No standard resolution url")
+                                try:
 
-                                        url = oneStory.video_low_resolution_url  # soll video url speichern wenn story ein video ist.
-                                        if url != None:
-                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
-                                            print("Continue")
-                                            continue
-                                    except AttributeError:
-                                        print("No Low Res URL Video")
-                                    try:
-                                        url = oneStory.video_low_bandwith_url  # soll video url speichern wenn story ein video ist.
-                                        if url != None:
-                                            self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
-                                            self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
-                                            print("Continue")
-                                            continue
-                                    except AttributeError:
-                                        print("No low bandwith url")
-                            else:
-                                print(oneStory)
-                                print("Something strange is happenning.")
-                except Exception as ex:
-                    print("HIER SIND WIR")
-                    print(ex)
-                    sys.exit(1)
-            now = datetime.now()
-            current_time = now.strftime("%H:%M:%S")
-            print("Paused since: ", current_time)
-            time.sleep(60 * 60)  # Eine Stunde warten bis die nächste anfrage kommt
+                                    url = oneStory.video_low_resolution_url  # soll video url speichern wenn story ein video ist.
+                                    if url != None:
+                                        self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                        self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                        print("Continue")
+                                        continue
+                                except AttributeError:
+                                    print("No Low Res URL Video")
+                                try:
+                                    url = oneStory.video_low_bandwith_url  # soll video url speichern wenn story ein video ist.
+                                    if url != None:
+                                        self.downloadProfilePicture(url, storyID, pair[1], oneStory.type)
+                                        self.databaseFunc.writeDataInDB(pair[1], storyID, unixtime, oneStory.type)
+                                        print("Continue")
+                                        continue
+                                except AttributeError:
+                                    print("No low bandwith url")
+                        else:
+                            print(oneStory)
+                            print("Something strange is happenning.")
+            except Exception as ex:
+                print("HIER SIND WIR")
+                print(ex)
+                sys.exit(1)
+            #now = datetime.now()
+            #current_time = now.strftime("%H:%M:%S")
+            #print("Paused since: ", current_time)
+            #time.sleep(60 * 60)  # Eine Stunde warten bis die nächste anfrage kommt
 
 
 
