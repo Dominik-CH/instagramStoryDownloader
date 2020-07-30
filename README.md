@@ -1,9 +1,9 @@
-## instagramStoryDownloader
+# instagramStoryDownloader
 
 A script to download Instagram Stories from any account you are permitted to see content from.<br>
-(Public Profiles and private ones your account is following)<br>
+<small>(Public Profiles and private ones your account is following)</small><br>
 
-# Setting everything up
+## Setting everything up
 
 <ul>
 <li>After cloning the repository open databaseConfig.py and go to line 77/78 delete the "#" and run the script to create the database.</li>
@@ -21,7 +21,7 @@ A script to download Instagram Stories from any account you are permitted to see
 
 
 
-# Dependencies
+## Dependencies
 Package | Version 
 ---------|----------
 requests | 2.23.0 
